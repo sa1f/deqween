@@ -18,6 +18,7 @@ prj/incremental_db
 prj/simulation
 prj/testbench
 prj/timing
+prj/output_files
 
 # ignore Quartus II generated files
 *_generation_script*
