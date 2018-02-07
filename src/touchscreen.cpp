@@ -1,5 +1,5 @@
 //CPEN 391 - Exercise 1.4 - touchscreen.c
-#include "touchscreen.h"
+#include "../include/touchscreen.h"
 
 /***************************************************************************
 * Public
@@ -8,11 +8,11 @@
 TouchScreen::TouchScreen(uint32_t baseAddr)
 {
 	// Set registers
-	mTouchscreen_Status		= baseAddr;
-	mTouchscreen_Control 	= baseAddr;
-	mTouchscreen_TxData		= baseAddr + 0x2;
-	mTouchscreen_RxData		= baseAddr + 0x2;
-	mTouchscreen_Baud		= baseAddr + 0x4;
+	(uint8_t*) mTouchscreen_Status		= baseAddr;
+	(uint8_t*) mTouchscreen_Control 	= baseAddr;
+	(uint8_t*) mTouchscreen_TxData		= baseAddr + 0x2;
+	(uint8_t*) mTouchscreen_RxData		= baseAddr + 0x2;
+	(uint8_t*) mTouchscreen_Baud		= baseAddr + 0x4;
 
 	// Program 6850 and baud rate generator to communicate with touchscreen
 	// send touchscreen controller an "enable touch" command
@@ -34,7 +34,6 @@ TouchScreen::TouchScreen(uint32_t baseAddr)
 }
 
 void TouchScreen::TouchLoop(){
-    Init_Touch();
     while(1){
         GetPress();
         GetRelease();
@@ -42,8 +41,6 @@ void TouchScreen::TouchLoop(){
 }
 
 void TouchScreen::SprintOneTouchLoop(){
-    Init_Touch();
-
     while(1){
         GetPress();
         Point p = GetRelease();
@@ -76,7 +73,7 @@ void TouchScreen::WaitForTouch()
         ;
 }
 
-Point TouchScreen::GetPen(void){
+TouchScreen::Point TouchScreen::GetPen(void){
     Point p1;
     int packets[4];
     // wait for a pen down command then return the X,Y coordinates of the point
@@ -107,9 +104,8 @@ Point TouchScreen::GetPen(void){
 /*****************************************************************************
 * This function waits for a touch screen press event and returns X,Y coord
 *****************************************************************************/
-Point TouchScreen::GetPress(void)
+TouchScreen::Point TouchScreen::GetPress(void)
 {
-     Point p1;
      // wait for a pen down command then return the X,Y coord of the point
      // calibrated correctly so that it maps to a pixel on screen
 
@@ -118,9 +114,8 @@ Point TouchScreen::GetPress(void)
 /*****************************************************************************
 * This function waits for a touch screen release event and returns X,Y coord
 *****************************************************************************/
-Point TouchScreen::GetRelease(void)
+TouchScreen::Point TouchScreen::GetRelease(void)
 {
-     Point p1;
      // wait for a pen up command then return the X,Y coord of the point
      // calibrated correctly so that it maps to a pixel on screen
      return GetPen();

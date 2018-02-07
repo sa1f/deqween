@@ -1,13 +1,13 @@
 #ifndef GPS_H_
 #define GPS_H_
 
+#include <string>
+
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-
-#include <string>
 
 #include "memory_map.h"
 
@@ -27,11 +27,11 @@ public:
 
 private:    
 
-    char GPSData[300] = {0};
-    char latitude[10] = {0};
-    char latitudeDir[2] = {0};
-    char longitude[10] = {0};
-    char longitudeDir[2] = {0};
+    char GPSData[300];
+    char latitude[10];
+    char latitudeDir[2];
+    char longitude[10];
+    char longitudeDir[2];
     
     // log Data
     // Probably wont use this in project
@@ -39,10 +39,10 @@ private:
     char logLong[8][10];
     char logData[300];
 
-    const uint32_t baud_9600         = 0x7
-    const uint32_t serial_rst        = 0x3
-    const uint32_t serial_init       = 0x95
-    const uint32_t gpsDataBufferSize = 300
+    uint32_t baud_9600;
+    uint32_t serial_rst;
+    uint32_t serial_init;
+    uint32_t gpsDataBufferSize;
 
     volatile uint8_t* mGPS_Control; 
     volatile uint8_t* mGPS_Status; 
@@ -63,12 +63,7 @@ private:
     void getLogData();
 
 
-
-
-
-
-
-}
+};
 
 
 #endif

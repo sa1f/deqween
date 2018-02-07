@@ -213,7 +213,8 @@ void Fill(){
  */
 void WriteRandomLines(int numLines){
 	int randLineType, randColor, randX1, randX2, randY1, randY2;
-	for (int i = 0; i < numLines; i++){
+	int i;
+	for (i = 0; i < numLines; i++){
 		randLineType = rand() % 3; // there are three types of lines
 		randColor = rand() % 10;    // choose randomly from the first 10 colors in enumeration
 		randX1 = rand() % SCREEN_WIDTH;

@@ -3,22 +3,26 @@
 
 GPS::GPS(uint32_t baseAddr)
 {
+    baud_9600         = 0x7;
+    serial_rst        = 0x3;
+    serial_init       = 0x95;
+    gpsDataBufferSize = 300;
 
 	// Set registers
-	mTouchscreen_Status		= baseAddr;
-	mTouchscreen_Control 	= baseAddr;
-	mTouchscreen_TxData		= baseAddr + 0x2;
-	mTouchscreen_RxData		= baseAddr + 0x2;
-	mTouchscreen_Baud		= baseAddr + 0x4;
+	mGPS_Status		= (uint8_t*)baseAddr;
+	mGPS_Control 	= (uint8_t*)baseAddr;
+	mGPS_TxData		= (uint8_t*)baseAddr + 0x2;
+	mGPS_RxData		= (uint8_t*)baseAddr + 0x2;
+	mGPS_Baud		= (uint8_t*)baseAddr + 0x4;
 
 	// set up 6850 control register to utilize a divide by 16 clock,
 	// set rts low, use 8 bits of data, no parity, 1 stop bit,
 	// transmitter interrupt disabled
-	*(GPS_Control) = serial_rst;	// master reset first
-	*(GPS_Control) = serial_init;
+	*mGPS_Control = serial_rst;	// master reset first
+	*mGPS_Control = serial_init;
 
 	// program baud rate generator to use 115k baud
-	*(GPS_Baud) = baud_9600;
+	*mGPS_Baud = baud_9600;
 }
 
 // the following function polls the 6850 to determine if any character

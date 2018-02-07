@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include "memory_map.h"
 
 
@@ -32,7 +33,7 @@ private:
 	volatile uint8_t* mTouchscreen_TxData; 
 	volatile uint8_t* mTouchscreen_RxData; 
 	volatile uint8_t* mTouchscreen_Baud; 
-}
+};
 
 
 #endif
