@@ -1,5 +1,6 @@
 //CPEN 391 - Exercise 1.4 - touchscreen.c
 #include "../include/touchscreen.h"
+#include <unistd.h>
 
 /***************************************************************************
 * Public
@@ -8,11 +9,11 @@
 TouchScreen::TouchScreen(uint32_t baseAddr)
 {
 	// Set registers
-	(uint8_t*) mTouchscreen_Status		= baseAddr;
-	(uint8_t*) mTouchscreen_Control 	= baseAddr;
-	(uint8_t*) mTouchscreen_TxData		= baseAddr + 0x2;
-	(uint8_t*) mTouchscreen_RxData		= baseAddr + 0x2;
-	(uint8_t*) mTouchscreen_Baud		= baseAddr + 0x4;
+	mTouchscreen_Status		= (uint8_t*) baseAddr;
+	mTouchscreen_Control 	= (uint8_t*) baseAddr;
+	mTouchscreen_TxData		= (uint8_t*) baseAddr + 0x2;
+	mTouchscreen_RxData		= (uint8_t*) baseAddr + 0x2;
+	mTouchscreen_Baud		= (uint8_t*) baseAddr + 0x4;
 
 	// Program 6850 and baud rate generator to communicate with touchscreen
 	// send touchscreen controller an "enable touch" command

@@ -5,17 +5,23 @@
 #include "../include/memory_map.h"
 #include "../include/touchscreen.h"
 #include "../include/gps.h"
+#include "../include/wifi.h"
 
 
 int main(void)
 {
-    // Init drivers
-    TouchScreen touchScreen();
-    GPS gps();
+    TouchScreen touchScreen(0x84000230);
+    GPS gps(0x84000210);
+    Wifi wifi(0x84000210);
 
-    while(1)
+    wifi.test_wifi();
+    while(true)
     {
-        // do project stuff
+    	if(gps.scanGPSData())
+    	{
+    	gps.getLat();
+    	gps.getLong();
+    	}
     }
 
 }

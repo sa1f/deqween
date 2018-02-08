@@ -41,6 +41,9 @@
 #define	YELLOW		5
 #define	CYAN		6
 #define	MAGENTA		7
+#define SILVER		8
+#define GREEN 		12
+#define TEAL		14
 
 #define SCREEN_WIDTH  800
 #define SCREEN_HEIGHT 480
@@ -180,7 +183,7 @@ void InitScreen(){
 void ClearScreen(){
 	int i;
 	for(i = 0; i < 479; i++){
-		WriteAHorzLine(0, 799, i, BLACK);
+		WriteAHorzLine(0, 799, i, TEAL);
 	}
 }
 
@@ -298,15 +301,160 @@ void WriteScriptedLinesTest(){
 	printf("Beginning scripted lines test... Done\n");
 }
 
+/*
+ * Displays title and three boxes with function header in each boxes
+ */
+void FrontPanel (){
+	//Initialize 3 rectangles of equal height and width as the main press buttons & their function header in the box
+	WriteRectangle(50,240,180,200,CYAN);
+	WriteRectangle(300,240,180,200,LIME);
+	WriteRectangle(550,240,180,200,MAGENTA);
+	char weather[] = {'W','e','a','t','h','e','r','\0'};
+	char door[] = {'D','o','o','r','\0'};
+	char light[] = {'L','i','g','h','t','\0'};
+	WriteAString(100,310,weather,CYAN,10);
+	WriteAString(370,310,door,LIME,10);
+	WriteAString(610,310,light,MAGENTA,10);
+
+	//Display the title at the top center of display
+	char title[] = {'Q','u','e','e','n','\0'};
+	WriteAString(370,120,title,YELLOW,10);
+}
+
+/*
+ * If Lock in DoorPanel is pressed, fills lock circle in color, vice versa
+ */
+void PressLockUnlockEffect(int lock){
+	if(lock == 1){
+		Fill(200,280,MAGENTA,MAGENTA);
+	}
+	else if(lock == 0){
+		Fill(600,280,BLUE,BLUE);
+	}
+}
+
+void DoorPanel(){
+	char door[] = {'D','o','o','r','\0'};
+	char lock[] = {'L','o','c','k','\0'};
+	char unlock[] = {'U','n','l','o','c','k','\0'};
+
+	//Display the title at the top center of display
+	WriteAString(370,120,door,YELLOW,20);
+
+	WriteCircle(200, 280, 100, MAGENTA);
+	WriteCircle(600, 280, 100, BLUE);
+	WriteAString(170,390,lock,WHITE,10);
+	WriteAString(570,390,unlock,WHITE,10);
+
+	//PressLockUnlockEffect(int lock);	TODO TAKES IN IF USER PRESS LOCK OR NOT
+}
+
+/*
+ * if is raining, background is BLUE; if is not raining, background is GREEN
+ */
+void isRainingBackgroundEffect (int isRaining){
+	if(isRaining == 1){
+		int i;
+		for(i = 0; i < 479; i++){
+			WriteAHorzLine(0, 799, i, BLUE);
+		}
+	}
+	else {
+		int i;
+		for(i = 0; i < 479; i++){
+			WriteAHorzLine(0, 799, i, GREEN);
+		}
+	}
+}
+
+/*
+ * Display weather panel
+ */
+void WeatherPanel(){
+	isRainingBackgroundEffect(0);	//TODO: TAKES IN INFO IF RAINING OR NOT
+
+	char weather[] = {'W','e','a','t','h','e','r','\0'};
+	char temp[] = {'T','e','m','p',':','\0'};
+	char raining[] = {'R','a','i','n','i','n','g',':','\0'};
+
+	WriteAString(370,120,weather,YELLOW,20);
+
+	WriteAString(170,290,temp,WHITE,10);
+	WriteAString(170,390,raining,WHITE,10);
+}
+
+/*
+ * ThemeNum 1- relax (default); 2- study; 3- party
+ * brightNum 0 - 0%; 1- 50% (default) ; 2- 100%
+ */
+void pressEffectLightPanel (int themeNum, int brightNum){
+	if(themeNum == 2){	//study mode
+		Fill(400,250,BLACK,BLACK);
+	}
+	else if(themeNum == 3){	//party mode
+		Fill(500,250,BLACK,BLACK);
+	}
+	else{	//relax mode
+		Fill(300,250,BLACK,BLACK);
+	}
+
+	if (brightNum == 0){	//light off
+		Fill(400,390,BLACK,BLACK);
+	}
+	else if(brightNum == 2){	//light 100%
+		Fill(600,390,BLACK,BLACK);
+	}
+	else{	//light 50% default
+		Fill(500,390,BLACK,BLACK);
+	}
+}
+
+void LightPanel(){
+	char light[] = {'L','i','g','h','t','\0'};
+	char theme[] = {'T','h','e','m','e','\0'};
+	char brightness[] = {'B','r','i','g','h','t','n','e','s','s','\0'};
+	char study[] = {'s','t','u','d','y','\0'};
+	char relax[] = {'r','e','l','a','x','\0'};
+	char party[] = {'p','a','r','t','y','\0'};
+	char zeroNum[] = {'0','\0'};
+	char fiftyNum[] = {'5','0','\0'};
+	char hundredNum[] = {'1','0','0','\0'};
+
+	WriteAString(370,120,light,BLACK,20);
+
+	WriteAString(170,250,theme,WHITE,10);
+	WriteCircle(300,250,30,BLACK);
+	WriteCircle(400,250,30,BLACK);
+	WriteCircle(500,250,30,BLACK);
+	WriteAString(270,290,relax,WHITE,10);
+	WriteAString(370,290,study,WHITE,10);
+	WriteAString(470,290,party,WHITE,10);
+
+	WriteAString(170,390,brightness,WHITE,10);
+	WriteCircle(400,390,30,BLACK);
+	WriteCircle(500,390,30,BLACK);
+	WriteCircle(600,390,30,BLACK);
+	WriteAString(390,430,zeroNum,WHITE,10);
+	WriteAString(490,430,fiftyNum,WHITE,10);
+	WriteAString(580,430,hundredNum,WHITE,10);
+
+	pressEffectLightPanel (1,2);	//TODO input user preference here
+}
+
 int main()
 {
 	InitScreen();
-	WriteRectangle(100, 100, 200, 400, CYAN);
-	WriteCircle(200, 300, 100, MAGENTA);
-	Fill(200, 300, RED, MAGENTA);
-
-	char hello_string[] = {'H', 'e', 'l', 'l', 'o', '!', '\0'};
-	WriteAString(400, 400, hello_string, YELLOW, 1);
+	LightPanel();
+//	WeatherPanel();
+//	DoorPanel();
+//	PressLockUnlockEffect(0);
+//	FrontPanel();
+//	WriteRectangle(100, 100, 200, 400, CYAN);
+//	WriteCircle(200, 300, 100, MAGENTA);
+//	Fill(200, 300, RED, MAGENTA);
+//
+//	char hello_string[] = {'H', 'e', 'l', 'l', 'o', '!', '\0'};
+//	WriteAString(400, 400, hello_string, YELLOW, 1);
 
 	return 0;
 }

@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <string>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
+#include <stdint.h>
+
+class Wifi
+{
+private:
+	volatile uint8_t* mWifi_Status;
+	volatile uint8_t* mWifi_Control;
+	volatile uint8_t* mWifi_TxData;
+	volatile uint8_t* mWifi_RxData;
+	volatile uint8_t* mWifi_Baud;
+
+    int putchar_wifi(char c);
+
+public:
+    Wifi(uint32_t baseAddr);
+    void send_message_nowait(std::string message);
+    void test_wifi();
+};

@@ -183,6 +183,8 @@ bool GPS::scanGPSData()
     std::string data = GPSData;
     position = data.find(header);
 
+    printf("%s\n", GPSData);
+
 	if (position != std::string::npos)
 	{
 		position += headerOffset;

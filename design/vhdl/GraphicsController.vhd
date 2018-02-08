@@ -1,7 +1,8 @@
 LIBRARY ieee; 
 USE ieee.Std_Logic_1164.all;
-use ieee.Std_Logic_arith.all; 
-use ieee.Std_Logic_signed.all;  
+--use ieee.Std_Logic_arith.all; 
+use ieee.Std_Logic_signed.all;
+use ieee.numeric_std.all;
    
 entity GraphicsController is  
 	Port (  
@@ -68,7 +69,9 @@ architecture bhvr of GraphicsController is
 				Y2_Select_H,
 				Command_Select_H,
 				Colour_Select_H,
-				BackGroundColour_Select_H: Std_Logic; 	
+				BackGroundColour_Select_H, 	
+				X1_Increment,
+				Y1_Increment: Std_Logic; 
 	
 	Signal 	CommandWritten_H, ClearCommandWritten_H,							-- signals to control that a command has bee written to the graphcis by NIOS
 				Idle_H, SetBusy_H, ClearBusy_H	: Std_Logic;					-- signals to control status of the graphics chip				
@@ -122,6 +125,8 @@ architecture bhvr of GraphicsController is
 	constant ReadPixel1							 	: Std_Logic_Vector(7 downto 0) := X"07";		-- State for reading a pixel
 	constant ReadPixel2							 	: Std_Logic_Vector(7 downto 0) := X"08";		-- State for reading a pixel
 	constant PalletteReProgram						: Std_Logic_Vector(7 downto 0) := X"09";		-- State for programming a pallette
+	constant DrawHLineInc							: Std_Logic_Vector(7 downto 0) := X"10";     -- State to allow X1 register to increment
+	constant DrawVLineInc							: Std_Logic_Vector(7 downto 0) := X"11";	   -- State to allow Y1 register to increment
 
 	-- add any extra states you need here for example to draw lines etc.
 -------------------------------------------------------------------------------------------------------------------------------------------------
@@ -246,6 +251,9 @@ Begin
 					X1(7 downto 0) <= DataInFromCPU(7 downto 0);
 				end if ;
 			end if;
+			if(X1_Increment = '1') then
+				X1 <= std_Logic_Vector(unsigned(X1) + 1);
+			end if;
 		end if;
 	end process;
 	
@@ -268,6 +276,9 @@ Begin
 				if(LDS_L = '0') then
 					Y1(7 downto 0) <= DataInFromCPU(7 downto 0);
 				end if;
+			end if;
+			if(Y1_Increment = '1') then
+				Y1 <= std_Logic_Vector(unsigned(Y1) + 1);
 			end if;
 		end if;
 	end process;
@@ -604,15 +615,51 @@ Begin
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		elsif(CurrentState = DrawHline) then
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-			-- TODO in your project
-			NextState <= IDLE;
+			Sig_AddressOut 	<= Y1(8 downto 0) & X1(9 downto 1);				-- 9 bit x address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixels/bytes
+			Sig_RW_Out			<= '0';													-- we are intending to draw a pixel so set RW to '0' for a write to memory
+
+			if(X1(0) = '0') then															-- if the address/pixel is an even numbered one
+				Sig_UDS_Out_L 	<= '0';													-- enable write to upper half of Sram data bus to access 1 pixel at that location
+			else
+				Sig_LDS_Out_L 	<= '0';													-- else write to lower half of Sram data bus to get the other pixel at that address
+			end if;	
+				
+			if (X1 < X2) then
+				NextState <= DrawHlineInc;
+				X1_Increment <= '1';
+			else
+				NextState <= IDLE;
+			end if;
+			
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		elsif(CurrentState = DrawHlineInc) then
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			nextState <= DrawHLine;
 				
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		elsif(CurrentState = DrawVline) then
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		
-			-- TODO in your project
-			NextState <= IDLE;
+			Sig_AddressOut 	<= Y1(8 downto 0) & X1(9 downto 1);				-- 9 bit x address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixels/bytes
+			Sig_RW_Out			<= '0';													-- we are intending to draw a pixel so set RW to '0' for a write to memory
+
+			if(X1(0) = '0') then															-- if the address/pixel is an even numbered one
+				Sig_UDS_Out_L 	<= '0';													-- enable write to upper half of Sram data bus to access 1 pixel at that location
+			else
+				Sig_LDS_Out_L 	<= '0';													-- else write to lower half of Sram data bus to get the other pixel at that address
+			end if;	
+				
+			if (Y1 < Y2) then
+				NextState <= DrawVlineInc;
+				Y1_Increment <= '1';
+			else
+				NextState <= IDLE;
+			end if;
 			
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+		elsif(CurrentState = DrawVlineInc) then
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+			nextState <= DrawVline;
+
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		elsif(CurrentState = DrawLine) then
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------		

@@ -24,7 +24,11 @@
 #define Touchscreen_RxData 		(volatile unsigned char *)(0x84000232)
 #define Touchscreen_Baud    	(volatile unsigned char *)(0x84000234)
 
-
+#define Wifi_Control 			(volatile unsigned char *)(0x84000210)
+#define Wifi_Status  			(volatile unsigned char *)(0x84000210)
+#define Wifi_TxData  			(volatile unsigned char *)(0x84000212)
+#define Wifi_RxData  			(volatile unsigned char *)(0x84000212)
+#define Wifi_Baud    			(volatile unsigned char *)(0x84000214)
 
 
 #endif /* MEMORY_MAP_H_ */
