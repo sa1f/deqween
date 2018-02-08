@@ -1,3 +1,7 @@
+
+#ifndef WIFI_H_
+#define WIFI_H_
+
 #include <stdio.h>
 #include <string>
 #include <string.h>
@@ -21,3 +25,5 @@ public:
     void send_message_nowait(std::string message);
     void test_wifi();
 };
+
+#endif
