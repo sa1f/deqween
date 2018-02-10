@@ -533,7 +533,7 @@ agreement for further details.
 )
 (pin
 	(bidir)
-	(rect 1568 1080 1744 1096)
+	(rect 1568 1088 1744 1104)
 	(text "BIDIR" (rect 1 0 25 10)(font "Arial" (font_size 6)))
 	(text "GPIO_0[35..0]" (rect 90 0 160 12)(font "Arial" ))
 	(pt 0 8)
@@ -547,7 +547,7 @@ agreement for further details.
 		(line (pt 52 8)(pt 56 12))
 	)
 	(text "VCC" (rect 4 7 24 17)(font "Arial" (font_size 6)))
-	(annotation_block (location)(rect 1744 1096 1808 1112))
+	(annotation_block (location)(rect 1744 1104 1808 1120))
 )
 (pin
 	(bidir)
@@ -1335,6 +1335,70 @@ agreement for further details.
 		(rectangle (rect 16 16 288 208))
 	)
 )
+(symbol
+	(rect 1216 -160 1424 -16)
+	(text "PWM_controller" (rect 5 0 81 12)(font "Arial" ))
+	(text "inst5" (rect 8 128 31 140)(font "Arial" ))
+	(port
+		(pt 0 32)
+		(input)
+		(text "clk_in" (rect 0 0 28 12)(font "Arial" ))
+		(text "clk_in" (rect 21 27 49 39)(font "Arial" ))
+		(line (pt 0 32)(pt 16 32))
+	)
+	(port
+		(pt 0 48)
+		(input)
+		(text "rst_in" (rect 0 0 27 12)(font "Arial" ))
+		(text "rst_in" (rect 21 43 48 55)(font "Arial" ))
+		(line (pt 0 48)(pt 16 48))
+	)
+	(port
+		(pt 0 64)
+		(input)
+		(text "pwm_ctrl0[7..0]" (rect 0 0 75 12)(font "Arial" ))
+		(text "pwm_ctrl0[7..0]" (rect 21 59 96 71)(font "Arial" ))
+		(line (pt 0 64)(pt 16 64)(line_width 3))
+	)
+	(port
+		(pt 0 80)
+		(input)
+		(text "pwm_ctrl1[7..0]" (rect 0 0 75 12)(font "Arial" ))
+		(text "pwm_ctrl1[7..0]" (rect 21 75 96 87)(font "Arial" ))
+		(line (pt 0 80)(pt 16 80)(line_width 3))
+	)
+	(port
+		(pt 0 96)
+		(input)
+		(text "pwm_ctrl2[7..0]" (rect 0 0 75 12)(font "Arial" ))
+		(text "pwm_ctrl2[7..0]" (rect 21 91 96 103)(font "Arial" ))
+		(line (pt 0 96)(pt 16 96)(line_width 3))
+	)
+	(port
+		(pt 208 32)
+		(output)
+		(text "pwm_out0" (rect 0 0 49 12)(font "Arial" ))
+		(text "pwm_out0" (rect 146 27 195 39)(font "Arial" ))
+		(line (pt 208 32)(pt 192 32))
+	)
+	(port
+		(pt 208 48)
+		(output)
+		(text "pwm_out1" (rect 0 0 49 12)(font "Arial" ))
+		(text "pwm_out1" (rect 146 43 195 55)(font "Arial" ))
+		(line (pt 208 48)(pt 192 48))
+	)
+	(port
+		(pt 208 64)
+		(output)
+		(text "pwm_out2" (rect 0 0 49 12)(font "Arial" ))
+		(text "pwm_out2" (rect 146 59 195 71)(font "Arial" ))
+		(line (pt 208 64)(pt 192 64))
+	)
+	(drawing
+		(rectangle (rect 16 16 192 128))
+	)
+)
 (connector
 	(text "IO_byte_enable[0]" (rect 680 487 692 577)(font "Arial" )(vertical))
 	(pt 696 312)
@@ -1571,11 +1635,6 @@ agreement for further details.
 	(pt 1024 -352)
 )
 (connector
-	(pt 80 104)
-	(pt 224 104)
-	(bus)
-)
-(connector
 	(pt 792 344)
 	(pt 1000 344)
 	(bus)
@@ -1630,21 +1689,6 @@ agreement for further details.
 (connector
 	(pt 1280 -368)
 	(pt 1416 -368)
-	(bus)
-)
-(connector
-	(pt 968 488)
-	(pt 640 488)
-	(bus)
-)
-(connector
-	(pt 984 472)
-	(pt 640 472)
-	(bus)
-)
-(connector
-	(pt 1000 456)
-	(pt 640 456)
 	(bus)
 )
 (connector
@@ -1723,22 +1767,6 @@ agreement for further details.
 	(bus)
 )
 (connector
-	(text "gpio_1[7..0]" (rect 1202 376 1259 388)(font "Arial" ))
-	(pt 1256 392)
-	(pt 640 392)
-	(bus)
-)
-(connector
-	(pt 1472 1104)
-	(pt 1568 1104)
-	(bus)
-)
-(connector
-	(pt 1568 1088)
-	(pt 1472 1088)
-	(bus)
-)
-(connector
 	(pt 320 736)
 	(pt 320 152)
 )
@@ -1756,10 +1784,6 @@ agreement for further details.
 	(pt 368 88)
 )
 (connector
-	(pt 208 88)
-	(pt 344 88)
-)
-(connector
 	(pt 640 296)
 	(pt 664 296)
 )
@@ -1773,34 +1797,9 @@ agreement for further details.
 	(bus)
 )
 (connector
-	(text "GPIO_1[28]" (rect 762 912 819 924)(font "Arial" ))
-	(pt 984 928)
-	(pt 752 928)
-)
-(connector
-	(text "GPIO_1[32]" (rect 762 928 819 940)(font "Arial" ))
-	(pt 984 944)
-	(pt 752 944)
-)
-(connector
 	(text "GPIO_0[11]" (rect 762 944 819 956)(font "Arial" ))
 	(pt 984 960)
 	(pt 752 960)
-)
-(connector
-	(text "GPIO_1[26]" (rect 1378 832 1435 844)(font "Arial" ))
-	(pt 1288 848)
-	(pt 1472 848)
-)
-(connector
-	(text "GPIO_1[34]" (rect 1378 848 1435 860)(font "Arial" ))
-	(pt 1288 864)
-	(pt 1472 864)
-)
-(connector
-	(text "GPIO_0[10]" (rect 1378 864 1435 876)(font "Arial" ))
-	(pt 1288 880)
-	(pt 1472 880)
 )
 (connector
 	(pt 1320 816)
@@ -1975,6 +1974,160 @@ agreement for further details.
 	(pt 1600 832)
 	(pt 1288 832)
 )
+(connector
+	(pt 176 104)
+	(pt 176 -112)
+)
+(connector
+	(pt 80 104)
+	(pt 176 104)
+	(bus)
+)
+(connector
+	(pt 176 104)
+	(pt 224 104)
+	(bus)
+)
+(connector
+	(pt 264 -128)
+	(pt 1216 -128)
+)
+(connector
+	(pt 264 88)
+	(pt 264 -128)
+)
+(connector
+	(pt 208 88)
+	(pt 264 88)
+)
+(connector
+	(pt 264 88)
+	(pt 344 88)
+)
+(connector
+	(pt 176 -112)
+	(pt 480 -112)
+)
+(connector
+	(pt 480 -112)
+	(pt 1216 -112)
+)
+(connector
+	(text "GPIO_1[26]" (rect 1378 832 1435 844)(font "Arial" ))
+	(pt 1288 848)
+	(pt 1472 848)
+)
+(connector
+	(text "GPIO_1[34]" (rect 1378 848 1435 860)(font "Arial" ))
+	(pt 1288 864)
+	(pt 1472 864)
+)
+(connector
+	(text "GPIO_0[10]" (rect 1378 864 1435 876)(font "Arial" ))
+	(pt 1288 880)
+	(pt 1472 880)
+)
+(connector
+	(pt 1568 1104)
+	(pt 1472 1104)
+	(bus)
+)
+(connector
+	(pt 1568 1096)
+	(pt 1472 1096)
+	(bus)
+)
+(connector
+	(text "gpio_1[7..0]" (rect 1202 376 1259 388)(font "Arial" ))
+	(pt 640 392)
+	(pt 1256 392)
+	(bus)
+)
+(connector
+	(text "GPIO_1[32]" (rect 762 928 819 940)(font "Arial" ))
+	(pt 984 944)
+	(pt 752 944)
+)
+(connector
+	(text "GPIO_1[28]" (rect 762 912 819 924)(font "Arial" ))
+	(pt 984 928)
+	(pt 752 928)
+)
+(connector
+	(text "GPIO_0[0]" (rect 1434 -144 1485 -132)(font "Arial" ))
+	(pt 1424 -128)
+	(pt 1512 -128)
+)
+(connector
+	(text "GPIO_0[1]" (rect 1434 -128 1485 -116)(font "Arial" ))
+	(pt 1424 -112)
+	(pt 1512 -112)
+)
+(connector
+	(text "GPIO_0[2]" (rect 1434 -112 1485 -100)(font "Arial" ))
+	(pt 1424 -96)
+	(pt 1512 -96)
+)
+(connector
+	(pt 1216 -96)
+	(pt 960 -96)
+	(bus)
+)
+(connector
+	(pt 960 -96)
+	(pt 960 456)
+	(bus)
+)
+(connector
+	(pt 1000 456)
+	(pt 960 456)
+	(bus)
+)
+(connector
+	(pt 960 456)
+	(pt 640 456)
+	(bus)
+)
+(connector
+	(pt 1216 -80)
+	(pt 968 -80)
+	(bus)
+)
+(connector
+	(pt 968 -80)
+	(pt 968 472)
+	(bus)
+)
+(connector
+	(pt 984 472)
+	(pt 968 472)
+	(bus)
+)
+(connector
+	(pt 968 472)
+	(pt 640 472)
+	(bus)
+)
+(connector
+	(pt 928 -64)
+	(pt 928 488)
+	(bus)
+)
+(connector
+	(pt 968 488)
+	(pt 928 488)
+	(bus)
+)
+(connector
+	(pt 928 488)
+	(pt 640 488)
+	(bus)
+)
+(connector
+	(pt 928 -64)
+	(pt 1216 -64)
+	(bus)
+)
 (junction (pt 664 296))
 (junction (pt 696 312))
 (junction (pt 208 88))
@@ -1994,6 +2147,12 @@ agreement for further details.
 (junction (pt 720 296))
 (junction (pt 744 280))
 (junction (pt 768 344))
+(junction (pt 264 88))
+(junction (pt 480 -112))
+(junction (pt 176 104))
+(junction (pt 960 456))
+(junction (pt 968 472))
+(junction (pt 928 488))
 (text "IO BaseAddress 0x8400_0200 - 0x8400_02FF" (rect 1024 1056 1289 1070)(font "Arial" (font_size 8)))
 (text "GPS_TXD" (rect 1496 832 1551 846)(font "Arial" (font_size 8)))
 (text "BlueTooth_TXD" (rect 1496 848 1583 862)(font "Arial" (font_size 8)))

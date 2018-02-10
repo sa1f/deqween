@@ -23,3 +23,13 @@ PLLJITTER	NA
 PLLSPEmax	NA
 PLLSPEmin	NA
 
+PLL_Name	PWM_controller:inst5|pwm_pll:u_pwm_pll|pwm_pll_pll_0:pll_0|altera_pll:altera_pll_i|general[0].gpll~FRACTIONAL_PLL
+PLLJITTER	27
+PLLSPEmax	100
+PLLSPEmin	-100
+
+PLL_Name	PWM_controller:inst5|pwm_pll:u_pwm_pll|pwm_pll_pll_0:pll_0|altera_pll:altera_pll_i|general[0].gpll~PLL_OUTPUT_COUNTER
+PLLJITTER	NA
+PLLSPEmax	NA
+PLLSPEmin	NA
+
