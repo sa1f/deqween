@@ -20,18 +20,22 @@ module PWM_controller
 localparam PWM_COUNT = 3;
 
 wire         pwm_clk         [PWM_COUNT-1:0];
-reg [19:0]   pwm_counter     [PWM_COUNT-1:0];
+reg [31:0]   pwm_counter     [PWM_COUNT-1:0];
 reg          pwm_value       [PWM_COUNT-1:0];
 wire [7:0]   pwm_ctrl_val     [PWM_COUNT-1:0];
-reg [19:0]   pwm_threshhold [PWM_COUNT-1:0];
+reg [31:0]   pwm_threshhold [PWM_COUNT-1:0];
 
 assign pwm_ctrl_val[0] = pwm_ctrl0;
 assign pwm_ctrl_val[1] = pwm_ctrl1;
 assign pwm_ctrl_val[2] = pwm_ctrl2;
 
+//assign pwm_out0 = 1'b1;
+//assign pwm_out1 = 1'b0;
+assign pwm_out2 = clk_in;
+
 assign pwm_out0 = pwm_value[0];
 assign pwm_out1 = pwm_value[1];
-assign pwm_out2 = pwm_value[2];
+//assign pwm_out2 = pwm_value[2];
 
 pwm_pll u_pwm_pll(
     .clk_in_clk     (clk_in),
@@ -47,25 +51,25 @@ generate
 
         always @(posedge clk_in or negedge rst_in) begin
             case (pwm_ctrl_val[i])
-                2: pwm_threshhold[i] <= 10000;
-                0: pwm_threshhold[i] <= 5000;
-                default: pwm_threshhold[i] <= 5000;
+                2: pwm_threshhold[i] <= 100000;
+                0: pwm_threshhold[i] <= 50000;
+                default: pwm_threshhold[i] <= 50000;
             endcase
         end
         
-        always @(posedge pwm_clk[i] or negedge rst_in) begin
+        always @(posedge clk_in or negedge rst_in) begin
             if (~rst_in) begin
                 pwm_counter[i] <= 0;
             end
             else begin
-                if (pwm_counter[i] == 100000)
+                if (pwm_counter[i] == 1000000)
                     pwm_counter[i] <= 0;
                 else 
                     pwm_counter[i] <= pwm_counter[i] + 1;
             end
         end
 
-        always @(posedge pwm_clk[i] or negedge rst_in) begin
+        always @(posedge clk_in or negedge rst_in) begin
             if (~rst_in) begin
                 pwm_value[i] <= 1;
             end
