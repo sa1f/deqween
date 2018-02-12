@@ -29,13 +29,9 @@ assign pwm_ctrl_val[0] = pwm_ctrl0;
 assign pwm_ctrl_val[1] = pwm_ctrl1;
 assign pwm_ctrl_val[2] = pwm_ctrl2;
 
-//assign pwm_out0 = 1'b1;
-//assign pwm_out1 = 1'b0;
-assign pwm_out2 = clk_in;
-
 assign pwm_out0 = pwm_value[0];
 assign pwm_out1 = pwm_value[1];
-//assign pwm_out2 = pwm_value[2];
+assign pwm_out2 = pwm_value[2];
 
 pwm_pll u_pwm_pll(
     .clk_in_clk     (clk_in),
@@ -51,7 +47,15 @@ generate
 
         always @(posedge clk_in or negedge rst_in) begin
             case (pwm_ctrl_val[i])
-                2: pwm_threshhold[i] <= 100000;
+                // 9 states of servo control
+                8: pwm_threshhold[i] <= 100000;
+                7: pwm_threshhold[i] <= 88888;
+                6: pwm_threshhold[i] <= 80000;
+                5: pwm_threshhold[i] <= 72727;
+                4: pwm_threshhold[i] <= 66666;
+                3: pwm_threshhold[i] <= 61538;
+                2: pwm_threshhold[i] <= 57143;
+                1: pwm_threshhold[i] <= 53333;
                 0: pwm_threshhold[i] <= 50000;
                 default: pwm_threshhold[i] <= 50000;
             endcase

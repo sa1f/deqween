@@ -7,6 +7,7 @@
 #include "../include/gps.h"
 #include "../include/wifi.h"
 #include "../include/graphics.h"
+#include "../include/servo.h"
 
 int main(void)
 {
