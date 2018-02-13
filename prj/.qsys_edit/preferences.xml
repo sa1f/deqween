@@ -7,7 +7,8 @@
    <irq preferredWidth="34" />
   </columns>
  </systemtable>
- <library expandedCategories="Library,Project" />
+ <library
+   expandedCategories="Library,Library/Basic Functions/Clocks; PLLs and Resets,Library/Basic Functions,Project,Library/Processors and Peripherals,Library/Processors and Peripherals/Peripherals" />
  <window width="1100" height="800" x="0" y="0" />
  <generation synthesis="VHDL" block_symbol_file="1" />
 </preferences>
