@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
+#include <vector>
+#include <string>
 
 // #defined constants representing values we write to the graphics 'command' register to get
 // it to do something. You will add more values as you add hardware to the graphics chip
@@ -73,11 +75,40 @@ extern const unsigned char Font5x7[][7];
 extern const unsigned int ColourPalletteData[256];
 typedef struct { int x,y;} XYPixel ;
 
+void doWeather();
+void doDoor();
+void doLights();
+
 class Graphics
 {
+public:
+	typedef struct {
+		unsigned int x, y, width, height;
+		void (*funcPtr)();
+	} FuncButton;
+
+	Graphics();
+	void ClearScreen();
+	void FrontPanel();
+	void PressLockUnlockEffect(int lock);
+	void DoorPanel();
+	void isRainingBackgroundEffect (int isRaining);
+	void WeatherPanel();
+	void pressEffectLightPanel (int themeNum, int brightNum);
+	void LightPanel();
+	void Button(unsigned int x, unsigned int y,
+				unsigned int height, unsigned int width, char text[],
+				unsigned int textColor, unsigned int borderColor, void (*func)());
+	void CircleButton(unsigned int x, unsigned int y,
+					  unsigned int radius, char text[],
+					  unsigned int textColor, unsigned int borderColor, void (*func)());
+
+	std::vector<FuncButton> getFuncButtons();
+
 private:
 	XYPixel XYStack[1000];
 	XYPixel *Next = &XYStack[0];
+	std::vector<Graphics::FuncButton> funcButtons;
 
 	void WriteAPixel (unsigned int x, unsigned int y, unsigned int Colour);
 	void WriteAHorzLine (unsigned int x1, unsigned int x2, unsigned int y, unsigned int Colour);
@@ -93,17 +124,6 @@ private:
 	int IsStackEmpty();
 	void OutGraphicsCharFont2(int x, int y, int colour, int backgroundcolour, int c, int Erase);
 	void OutGraphicsCharFont1(int x, int y, int fontcolour, int backgroundcolour, int c, int Erase);
-
-public:
-	Graphics();
-	void ClearScreen();
-	void FrontPanel();
-	void PressLockUnlockEffect(int lock);
-	void DoorPanel();
-	void isRainingBackgroundEffect (int isRaining);
-	void WeatherPanel();
-	void pressEffectLightPanel (int themeNum, int brightNum);
-	void LightPanel();
 };
 
 #endif /* GRAPHICS_H_ */

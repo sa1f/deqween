@@ -35,9 +35,10 @@ TouchScreen::TouchScreen(uint32_t baseAddr)
 }
 
 void TouchScreen::TouchLoop(){
-    while(1){
-        GetPress();
-        GetRelease();
+    while(true){
+        Point p = GetRelease();
+        printf("x: %i\n", p.x);
+        printf("y: %i\n", p.y);
     }
 }
 
@@ -95,9 +96,6 @@ TouchScreen::Point TouchScreen::GetPen(void){
     // Map from controller resolution to screen pixel
     p1.x = p1.x * 799 / 4095;   //[data sheet p14] The resulting full-scale range for reported touch coordinates is 0 to 4095
     p1.y = p1.y  * 479 / 4095;
-
-    printf("x = %d ", p1.x);
-    printf("y = %d\n", p1.y);
 
     return p1;
 }

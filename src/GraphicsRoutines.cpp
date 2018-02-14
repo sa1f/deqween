@@ -1,4 +1,34 @@
 #include "../include/graphics.h"
+#include "../include/globals.h"
+
+void doWeather() {
+	graphics.ClearScreen();
+	graphics.WeatherPanel();
+}
+
+void doDoor() {
+	graphics.ClearScreen();
+	graphics.DoorPanel();
+}
+
+void doOpenDoor() {
+	servo.setServo(0);
+}
+
+void doCloseDoor() {
+	servo.setServo(6);
+}
+
+void doLight() {
+	graphics.ClearScreen();
+	graphics.LightPanel();
+}
+
+void doBack() {
+	graphics.ClearScreen();
+	graphics.FrontPanel();
+};
+
 
 /**
  * Initializes screen by programming colour palette and clearing screen.
@@ -8,7 +38,7 @@ Graphics::Graphics(){
 	for (i = 0; i < 10; i++){
 		ProgramPalette(i, ColourPalletteData[i]);
 	}
-	printf("Programming the first nine enum'd colours into the colour palette.. Done\n");
+	printf("Programming colours into the colour palette.. Done\n");
 	ClearScreen();
 	printf("Clearing screen... Done\n");
 }
@@ -88,8 +118,8 @@ void Graphics::ProgramPalette(unsigned int PaletteNumber, unsigned int RGB)
 {
     WAIT_FOR_GRAPHICS;
     GraphicsColourReg = PaletteNumber;
-    GraphicsX1Reg = RGB >> 16   ;          // program red value in ls.8 bit of X1 reg
-    GraphicsY1Reg = RGB ;                	 // program green and blue into 16 bit of Y1 reg
+    GraphicsX1Reg = RGB >> 16;          // program red value in ls.8 bit of X1 reg
+    GraphicsY1Reg = RGB;                	 // program green and blue into 16 bit of Y1 reg
     GraphicsCommandReg = ProgramPaletteColour;	// issue command
 }
 
@@ -100,36 +130,36 @@ int Graphics::PushPixel(XYPixel p1)
         return 0 ;
     }
     else
-        return -1 ;
+        return -1;
 }
 
 int Graphics::PopPixel(XYPixel *theXYPixel)
 {
     if(Next >= XYStack) {
         *theXYPixel = *(--Next);
-        return 0 ;
+        return 0;
     }
     else
-        return -1 ;
+        return -1;
 }
 
 int Graphics::IsStackEmpty()
 {
     if(Next == XYStack)
-        return 1 ;
+        return 1;
     else
-        return 0 ;
+        return 0;
 }
 
 void Graphics::Fill(int _x, int _y, int _FillColour, int _BoundaryColour)
 {
-    register int     x, y ;
+    register int     x, y;
     register int     BoundaryColour = _BoundaryColour;
-    register int 	 PixelColour, FillColour = _FillColour ;
+    register int 	 PixelColour, FillColour = _FillColour;
 
-    int     XRight, XLeft ;
-    int     SaveX, SaveY ;      		// temp variable
-    XYPixel aPoint, aPoint1 ;           // temp var
+    int     XRight, XLeft;
+    int     SaveX, SaveY;      		// temp variable
+    XYPixel aPoint, aPoint1;           // temp var
 
     Next = XYStack ;                    // initialise to start of stack
     aPoint.x = _x ;
@@ -262,8 +292,9 @@ void Graphics::Fill(int _x, int _y, int _FillColour, int _BoundaryColour)
 void Graphics::ClearScreen(){
 	int i;
 	for(i = 0; i < 479; i++){
-		WriteAHorzLine(0, 799, i, TEAL);
+		WriteAHorzLine(0, 799, i, CYAN);
 	}
+	funcButtons.clear();
 }
 
 /*
@@ -415,21 +446,42 @@ void Graphics::OutGraphicsCharFont1(int x, int y, int fontcolour, int background
 /*
  * Displays title and three boxes with function header in each boxes
  */
-void Graphics::FrontPanel (){
-	//Initialize 3 rectangles of equal height and width as the main press buttons & their function header in the box
-	WriteRectangle(50,240,180,200,CYAN);
-	WriteRectangle(300,240,180,200,LIME);
-	WriteRectangle(550,240,180,200,MAGENTA);
-	char weather[] = {'W','e','a','t','h','e','r','\0'};
-	char door[] = {'D','o','o','r','\0'};
-	char light[] = {'L','i','g','h','t','\0'};
-	WriteAString(100,310,weather,CYAN,10);
-	WriteAString(370,310,door,LIME,10);
-	WriteAString(610,310,light,MAGENTA,10);
 
+
+void Graphics::Button(unsigned int x, unsigned int y,
+					  unsigned int height, unsigned int width,
+					  char text[], unsigned int textColor,
+					  unsigned int borderColor, void (*func)()){
+
+	WriteRectangle(x, y, height, width, borderColor);
+	WriteAString(x + width / 2, y + height / 2, text, textColor, 1);
+	FuncButton b = {x, y, width, height, func};
+	funcButtons.push_back(b);
+}
+
+void Graphics::CircleButton(unsigned int x, unsigned int y,
+					  unsigned int radius, char text[], unsigned int textColor,
+					  unsigned int borderColor, void (*func)()){
+
+	WriteCircle(x, y, radius, borderColor);
+	WriteAString(x, y, text, textColor, 1);
+	FuncButton b = {x - radius, y - radius, radius * 2, radius * 2, func};
+	funcButtons.push_back(b);
+}
+
+void Graphics::FrontPanel (){
 	//Display the title at the top center of display
 	char title[] = {'Q','u','e','e','n','\0'};
 	WriteAString(370,120,title,YELLOW,10);
+
+	char back[] = {'B', 'a', 'c', 'k', '\0'};
+	char weather[] = {'W','e','a','t','h','e','r','\0'};
+	char door[] = {'D','o','o','r','\0'};
+	char light[] = {'L','i','g','h','t','\0'};
+	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+	Button(50, 240, 180, 200, weather, BLUE, BLUE, &doWeather);
+	Button(300, 240, 180, 200, door, LIME, LIME, &doDoor);
+	Button(550, 240, 180, 200, light, MAGENTA, MAGENTA, &doLight);
 }
 
 /*
@@ -449,13 +501,16 @@ void Graphics::DoorPanel(){
 	char lock[] = {'L','o','c','k','\0'};
 	char unlock[] = {'U','n','l','o','c','k','\0'};
 
+	CircleButton(200, 280, 100, lock, MAGENTA, MAGENTA, &doCloseDoor);
+	CircleButton(600, 280, 100, unlock, BLUE, BLUE, &doOpenDoor);
+
 	//Display the title at the top center of display
 	WriteAString(370,120,door,YELLOW,20);
-
 	WriteCircle(200, 280, 100, MAGENTA);
 	WriteCircle(600, 280, 100, BLUE);
-	WriteAString(170,390,lock,WHITE,10);
-	WriteAString(570,390,unlock,WHITE,10);
+
+	char back[] = {'B', 'a', 'c', 'k', '\0'};
+	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
 
 	//PressLockUnlockEffect(int lock);	TODO TAKES IN IF USER PRESS LOCK OR NOT
 }
@@ -482,16 +537,20 @@ void Graphics::isRainingBackgroundEffect (int isRaining){
  * Display weather panel
  */
 void Graphics::WeatherPanel(){
-	isRainingBackgroundEffect(0);	//TODO: TAKES IN INFO IF RAINING OR NOT
+
+	//isRainingBackgroundEffect(0);	//TODO: TAKES IN INFO IF RAINING OR NOT
 
 	char weather[] = {'W','e','a','t','h','e','r','\0'};
 	char temp[] = {'T','e','m','p',':','\0'};
 	char raining[] = {'R','a','i','n','i','n','g',':','\0'};
 
-	WriteAString(370,120,weather,YELLOW,20);
+	WriteAString(370,120,weather,BLACK,20);
+	WriteAString(170,290,temp,BLACK,10);
+	WriteAString(170,390,raining,BLACK,10);
 
-	WriteAString(170,290,temp,WHITE,10);
-	WriteAString(170,390,raining,WHITE,10);
+	char back[] = {'B', 'a', 'c', 'k', '\0'};
+	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+
 }
 
 /*
@@ -521,6 +580,7 @@ void Graphics::pressEffectLightPanel (int themeNum, int brightNum){
 }
 
 void Graphics::LightPanel(){
+
 	char light[] = {'L','i','g','h','t','\0'};
 	char theme[] = {'T','h','e','m','e','\0'};
 	char brightness[] = {'B','r','i','g','h','t','n','e','s','s','\0'};
@@ -533,21 +593,28 @@ void Graphics::LightPanel(){
 
 	WriteAString(370,120,light,BLACK,20);
 
-	WriteAString(170,250,theme,WHITE,10);
+	WriteAString(170,250,theme,BLACK,10);
 	WriteCircle(300,250,30,BLACK);
 	WriteCircle(400,250,30,BLACK);
 	WriteCircle(500,250,30,BLACK);
-	WriteAString(270,290,relax,WHITE,10);
-	WriteAString(370,290,study,WHITE,10);
-	WriteAString(470,290,party,WHITE,10);
+	WriteAString(270,290,relax,BLACK,10);
+	WriteAString(370,290,study,BLACK,10);
+	WriteAString(470,290,party,BLACK,10);
 
-	WriteAString(170,390,brightness,WHITE,10);
+	WriteAString(170,390,brightness,BLACK,10);
 	WriteCircle(400,390,30,BLACK);
 	WriteCircle(500,390,30,BLACK);
 	WriteCircle(600,390,30,BLACK);
-	WriteAString(390,430,zeroNum,WHITE,10);
-	WriteAString(490,430,fiftyNum,WHITE,10);
-	WriteAString(580,430,hundredNum,WHITE,10);
+	WriteAString(390,430,zeroNum,BLACK,10);
+	WriteAString(490,430,fiftyNum,BLACK,10);
+	WriteAString(580,430,hundredNum,BLACK,10);
 
-	pressEffectLightPanel (1,2);	//TODO input user preference here
+	//pressEffectLightPanel (1,2);	//TODO input user preference here
+	char back[] = {'B', 'a', 'c', 'k', '\0'};
+	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+
+}
+
+std::vector<Graphics::FuncButton> Graphics::getFuncButtons() {
+	return funcButtons;
 }

@@ -1,5 +1,5 @@
-#ifndef GPS_H_
-#define GPS_H_
+#ifndef SERVO_H_
+#define SERVO_H_
 
 #include <stdio.h>
 #include <stdint.h>
