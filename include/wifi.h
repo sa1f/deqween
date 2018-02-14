@@ -8,6 +8,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <stdint.h>
+#include <vector>
 
 class Wifi
 {
@@ -24,6 +25,8 @@ public:
     Wifi(uint32_t baseAddr);
     void send_message_nowait(std::string message);
     void test_wifi();
+    int getchar_wifi();
+    std::vector<std::string> get_weather_data();
 };
 
 #endif

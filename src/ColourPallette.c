@@ -21,12 +21,12 @@
 
 const unsigned int ColourPalletteData[256] = {
 0x00000000, // Black
-0x00FFFFFF, // White
+0x00daf5ff, // White
 0x00FF0000, // Red
 0x0000FF00, // Green/Lime
-0x000000FF, // Blue
+0x0044ffd2, // Blue
 0x00FFFF00, // Yellow
-0x0000FFFF, // Cyan
+0x0087f6ff, // Cyan
 0x00FF00FF, // Magenta
 0x00C0C0C0, // Silver
 0x00808080, // Gray

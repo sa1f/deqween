@@ -1,34 +1,103 @@
 #include "../include/graphics.h"
 #include "../include/globals.h"
+#include <iostream>
 
-void doWeather() {
+void doWeather(int x, int y, int width, int height) {
 	graphics.ClearScreen();
 	graphics.WeatherPanel();
+	std::vector<std::string> weather_data = wifi.get_weather_data();
+	std::cout << weather_data[0] << " " << weather_data[1] << std::endl;
 }
 
-void doDoor() {
+void doDoor(int x, int y, int width, int height) {
 	graphics.ClearScreen();
 	graphics.DoorPanel();
 }
 
-void doOpenDoor() {
+void doOpenDoor(int x, int y, int width, int height) {
+	graphics.DrawDoorOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char unlock[] = {'u', 'n', 'l', 'o', 'c', 'k', '\0'};
+	graphics.WriteAString(x + width / 2 - 6 * 11 / 2, y + height / 2, unlock, BLACK, 1);
+
 	servo.setServo(0);
 }
 
-void doCloseDoor() {
+void doCloseDoor(int x, int y, int width, int height) {
+	graphics.DrawDoorOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char lock[] = {'l', 'o', 'c', 'k', '\0'};
+	graphics.WriteAString(x + width / 2 - 4 * 11 / 2, y + height / 2, lock, BLACK, 1);
+
 	servo.setServo(6);
 }
 
-void doLight() {
+void doLight(int x, int y, int width, int height) {
 	graphics.ClearScreen();
 	graphics.LightPanel();
 }
 
-void doBack() {
+void doBack(int x, int y, int width, int height) {
 	graphics.ClearScreen();
 	graphics.FrontPanel();
-};
+}
 
+void doLightRelax(int x, int y, int width, int height) {
+	graphics.DrawThemeOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char relax[] = {'r', 'e', 'l', 'a', 'x', '\0'};
+	graphics.WriteAString(x + width / 2 - 25, y + height / 2, relax, BLACK, 1);
+
+	// send lua
+	wifi.send_message_nowait("dofile(\"module.lua\")\r\n");
+	usleep(1000000);
+	wifi.send_message_nowait("set_light(\"hello\")\r\n");
+}
+
+void doLightStudy(int x, int y, int width, int height) {
+	graphics.DrawThemeOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char study[] = {'s', 't', 'u', 'd', 'y', '\0'};
+	graphics.WriteAString(x + width / 2 - 25, y + height / 2, study, BLACK, 1);
+
+	// send lua
+}
+
+void doLightParty(int x, int y, int width, int height) {
+	graphics.DrawThemeOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char party[] = {'p', 'a', 'r', 't', 'y', '\0'};
+	graphics.WriteAString(x + width / 2 - 5 * 11 / 2, y + height / 2, party, BLACK, 1);
+
+	// send lua
+}
+
+void doLightZero(int x, int y, int width, int height) {
+	graphics.DrawBrightnessOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char zero[] = {'0', '\0'};
+	graphics.WriteAString(x + width / 2 - 1 * 11 / 2, y + height / 2, zero, BLACK, 1);
+
+	// send lua
+}
+
+void doLightFifty(int x, int y, int width, int height) {
+	graphics.DrawBrightnessOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char fifty[] = {'5', '0', '\0'};
+	graphics.WriteAString(x + width / 2 - 2 * 11 / 2, y + height / 2, fifty, BLACK, 1);
+
+	// send lua
+}
+
+void doLightHundred(int x, int y, int width, int height) {
+	graphics.DrawBrightnessOptions();
+	graphics.SquareFill(x, y, width, height, BLUE);
+	char hundred[] = {'1', '0', '0', '\0'};
+	graphics.WriteAString(x + width / 2 - 3 * 11 / 2, y + height / 2, hundred, BLACK, 1);
+
+	// send lua
+}
 
 /**
  * Initializes screen by programming colour palette and clearing screen.
@@ -281,6 +350,11 @@ void Graphics::Fill(int _x, int _y, int _FillColour, int _BoundaryColour)
     }
 }
 
+void Graphics::SquareFill(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned int fillColor) {
+	for (unsigned int row = y + 1; row < y + height; row++) {
+		WriteAHorzLine(x + 1, x + width - 1, row, fillColor);
+	}
+}
 
 /***************************************************************************
  * FUNCTIONS FOR DRAWING HIGHER ORDER SHAPES LIKE RECTANGLES AND CIRCLES
@@ -292,7 +366,7 @@ void Graphics::Fill(int _x, int _y, int _FillColour, int _BoundaryColour)
 void Graphics::ClearScreen(){
 	int i;
 	for(i = 0; i < 479; i++){
-		WriteAHorzLine(0, 799, i, CYAN);
+		WriteAHorzLine(0, 799, i, WHITE);
 	}
 	funcButtons.clear();
 }
@@ -451,20 +525,31 @@ void Graphics::OutGraphicsCharFont1(int x, int y, int fontcolour, int background
 void Graphics::Button(unsigned int x, unsigned int y,
 					  unsigned int height, unsigned int width,
 					  char text[], unsigned int textColor,
-					  unsigned int borderColor, void (*func)()){
+					  unsigned int borderColor, void (*func)(int, int, int, int)){
+
+	int strlen = 0;
+	while (text[strlen] != '\0') {
+		strlen++;
+	}
 
 	WriteRectangle(x, y, height, width, borderColor);
-	WriteAString(x + width / 2, y + height / 2, text, textColor, 1);
+	SquareFill(x , y, width, height, CYAN);
+	WriteAString(x + width / 2 - strlen * 11 / 2, y + height / 2, text, textColor, 1);
 	FuncButton b = {x, y, width, height, func};
 	funcButtons.push_back(b);
 }
 
 void Graphics::CircleButton(unsigned int x, unsigned int y,
 					  unsigned int radius, char text[], unsigned int textColor,
-					  unsigned int borderColor, void (*func)()){
+					  unsigned int borderColor, void (*func)(int, int, int, int)){
+
+	int strlen = 0;
+	while (text[strlen] != '\0') {
+		strlen++;
+	}
 
 	WriteCircle(x, y, radius, borderColor);
-	WriteAString(x, y, text, textColor, 1);
+	WriteAString(x - strlen * 11 / 2, y, text, textColor, 1);
 	FuncButton b = {x - radius, y - radius, radius * 2, radius * 2, func};
 	funcButtons.push_back(b);
 }
@@ -472,16 +557,14 @@ void Graphics::CircleButton(unsigned int x, unsigned int y,
 void Graphics::FrontPanel (){
 	//Display the title at the top center of display
 	char title[] = {'Q','u','e','e','n','\0'};
-	WriteAString(370,120,title,YELLOW,10);
+	WriteAString(370,120,title,BLACK,10);
 
-	char back[] = {'B', 'a', 'c', 'k', '\0'};
 	char weather[] = {'W','e','a','t','h','e','r','\0'};
 	char door[] = {'D','o','o','r','\0'};
 	char light[] = {'L','i','g','h','t','\0'};
-	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
-	Button(50, 240, 180, 200, weather, BLUE, BLUE, &doWeather);
-	Button(300, 240, 180, 200, door, LIME, LIME, &doDoor);
-	Button(550, 240, 180, 200, light, MAGENTA, MAGENTA, &doLight);
+	CircleButton(200, 300, 90, weather, BLACK, BLACK, &doWeather);
+	CircleButton(400, 300, 90, door, BLACK, BLACK, &doDoor);
+	CircleButton(600, 300, 90, light, BLACK, BLACK, &doLight);
 }
 
 /*
@@ -497,23 +580,24 @@ void Graphics::PressLockUnlockEffect(int lock){
 }
 
 void Graphics::DoorPanel(){
-	char door[] = {'D','o','o','r','\0'};
-	char lock[] = {'L','o','c','k','\0'};
-	char unlock[] = {'U','n','l','o','c','k','\0'};
-
-	CircleButton(200, 280, 100, lock, MAGENTA, MAGENTA, &doCloseDoor);
-	CircleButton(600, 280, 100, unlock, BLUE, BLUE, &doOpenDoor);
-
+	char door[] = {'D','o','o','r', ' ', 'C', 'o', 'n', 't', 'r', 'o', 'l', '\0'};
+	DrawDoorOptions();
 	//Display the title at the top center of display
-	WriteAString(370,120,door,YELLOW,20);
-	WriteCircle(200, 280, 100, MAGENTA);
-	WriteCircle(600, 280, 100, BLUE);
+	WriteAString(268, 120, door, BLACK, 20);
 
 	char back[] = {'B', 'a', 'c', 'k', '\0'};
-	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+	CircleButton(125, 85, 50, back, BLACK, BLACK, &doBack);
 
 	//PressLockUnlockEffect(int lock);	TODO TAKES IN IF USER PRESS LOCK OR NOT
 }
+
+void Graphics::DrawDoorOptions() {
+	char lock[] = {'l','o','c','k','\0'};
+	char unlock[] = {'u','n','l','o','c','k','\0'};
+	Button(200, 180, 200, 200, lock, BLACK, BLACK, &doCloseDoor);
+	Button(400, 180, 200, 200, unlock, BLACK, BLACK, &doOpenDoor);
+}
+
 
 /*
  * if is raining, background is BLUE; if is not raining, background is GREEN
@@ -549,7 +633,7 @@ void Graphics::WeatherPanel(){
 	WriteAString(170,390,raining,BLACK,10);
 
 	char back[] = {'B', 'a', 'c', 'k', '\0'};
-	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+	CircleButton(125, 85, 50, back, BLACK, BLACK, &doBack);
 
 }
 
@@ -579,42 +663,42 @@ void Graphics::pressEffectLightPanel (int themeNum, int brightNum){
 	}
 }
 
-void Graphics::LightPanel(){
-
-	char light[] = {'L','i','g','h','t','\0'};
+void Graphics::DrawThemeOptions() {
 	char theme[] = {'T','h','e','m','e','\0'};
-	char brightness[] = {'B','r','i','g','h','t','n','e','s','s','\0'};
 	char study[] = {'s','t','u','d','y','\0'};
 	char relax[] = {'r','e','l','a','x','\0'};
 	char party[] = {'p','a','r','t','y','\0'};
+	WriteAString(170, 250, theme, BLACK, 10);
+	Button(250, 200, 100, 100, relax, BLACK, BLACK, &doLightRelax);
+	Button(350, 200, 100, 100, study, BLACK, BLACK, &doLightStudy);
+	Button(450, 200, 100, 100, party, BLACK, BLACK, &doLightParty);
+}
+
+void Graphics::DrawBrightnessOptions() {
+	char brightness[] = {'B','r','i','g','h','t','n','e','s','s','\0'};
 	char zeroNum[] = {'0','\0'};
 	char fiftyNum[] = {'5','0','\0'};
 	char hundredNum[] = {'1','0','0','\0'};
+	WriteAString(110, 390, brightness, BLACK, 10);
+	Button(250, 340, 100, 100, zeroNum, BLACK, BLACK, &doLightZero);
+	Button(350, 340, 100, 100, fiftyNum, BLACK, BLACK, &doLightFifty);
+	Button(450, 340, 100, 100, hundredNum, BLACK, BLACK, &doLightHundred);
+}
 
-	WriteAString(370,120,light,BLACK,20);
+void Graphics::LightPanel(){
 
-	WriteAString(170,250,theme,BLACK,10);
-	WriteCircle(300,250,30,BLACK);
-	WriteCircle(400,250,30,BLACK);
-	WriteCircle(500,250,30,BLACK);
-	WriteAString(270,290,relax,BLACK,10);
-	WriteAString(370,290,study,BLACK,10);
-	WriteAString(470,290,party,BLACK,10);
+	char light[] = {'L','i','g','h','t','\0'};
+	WriteAString(370 ,120, light, BLACK, 20);
 
-	WriteAString(170,390,brightness,BLACK,10);
-	WriteCircle(400,390,30,BLACK);
-	WriteCircle(500,390,30,BLACK);
-	WriteCircle(600,390,30,BLACK);
-	WriteAString(390,430,zeroNum,BLACK,10);
-	WriteAString(490,430,fiftyNum,BLACK,10);
-	WriteAString(580,430,hundredNum,BLACK,10);
+	DrawThemeOptions();
+	DrawBrightnessOptions();
 
 	//pressEffectLightPanel (1,2);	//TODO input user preference here
 	char back[] = {'B', 'a', 'c', 'k', '\0'};
-	Button(50, 10, 100, 200, back, BLACK, BLACK, &doBack);
+	CircleButton(125, 85, 50, back, BLACK, BLACK, &doBack);
 
 }
 
-std::vector<Graphics::FuncButton> Graphics::getFuncButtons() {
+std::vector<Graphics::FuncButton>& Graphics::getFuncButtons() {
 	return funcButtons;
 }

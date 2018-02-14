@@ -75,16 +75,24 @@ extern const unsigned char Font5x7[][7];
 extern const unsigned int ColourPalletteData[256];
 typedef struct { int x,y;} XYPixel ;
 
-void doWeather();
-void doDoor();
-void doLights();
+void doWeather(int x, int y, int width, int height);
+void doDoor(int x, int y, int width, int height);
+void doOpenDoor(int x, int y, int width, int height);
+void doCloseDoor(int x, int y, int width, int height);
+void doLights(int x, int y, int width, int height);
+void doLightRelax(int x, int y, int width, int height);
+void doLightStudy(int x, int y, int width, int height);
+void doLightParty(int x, int y, int width, int height);
+void doLightZero(int x, int y, int width, int height);
+void doLightFifty(int x, int y, int width, int height);
+void doLightHundred(int x, int y, int width, int height);
 
 class Graphics
 {
 public:
 	typedef struct {
 		unsigned int x, y, width, height;
-		void (*funcPtr)();
+		void (*funcPtr)(int, int, int, int);
 	} FuncButton;
 
 	Graphics();
@@ -96,14 +104,18 @@ public:
 	void WeatherPanel();
 	void pressEffectLightPanel (int themeNum, int brightNum);
 	void LightPanel();
+	void SquareFill(unsigned int x, unsigned int y, unsigned int height, unsigned int width, unsigned int fillColor);
 	void Button(unsigned int x, unsigned int y,
 				unsigned int height, unsigned int width, char text[],
-				unsigned int textColor, unsigned int borderColor, void (*func)());
+				unsigned int textColor, unsigned int borderColor, void (*func)(int, int, int, int));
 	void CircleButton(unsigned int x, unsigned int y,
 					  unsigned int radius, char text[],
-					  unsigned int textColor, unsigned int borderColor, void (*func)());
-
-	std::vector<FuncButton> getFuncButtons();
+					  unsigned int textColor, unsigned int borderColor, void (*func)(int, int, int, int));
+	void WriteAString(int x, int y, char str[], int color, int big);
+	void DrawThemeOptions();
+	void DrawBrightnessOptions();
+	void DrawDoorOptions();
+	std::vector<Graphics::FuncButton>& getFuncButtons();
 
 private:
 	XYPixel XYStack[1000];
@@ -117,7 +129,6 @@ private:
 	void ProgramPalette(unsigned int PaletteNumber, unsigned int RGB);
 	void WriteRectangle(unsigned int x, unsigned int y, unsigned int height, unsigned int width, unsigned int borderColor);
 	void WriteCircle(unsigned int x0, unsigned int y0, unsigned int radius, unsigned int colour);
-	void WriteAString(int x, int y, char str[], int color, int big);
 	void Fill(int _x, int _y, int _FillColour, int _BoundaryColour);
 	int PushPixel(XYPixel p1);
 	int PopPixel(XYPixel *theXYPixel);
