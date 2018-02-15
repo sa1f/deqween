@@ -1,5 +1,6 @@
 
 #include "../include/gps.h"
+#include "../include/globals.h"
 
 GPS::GPS(uint32_t baseAddr)
 {
@@ -184,6 +185,7 @@ bool GPS::scanGPSData()
     position = data.find(header);
 
     printf("%s\n", GPSData);
+
 
 	if (position != std::string::npos)
 	{

@@ -26,7 +26,8 @@ public:
     void send_message_nowait(std::string message);
     void test_wifi();
     int getchar_wifi();
-    std::vector<std::string> get_weather_data();
+    std::vector<std::string> get_weather_data(int longitude, int lat);
+    //void Wifi::set_light(std::string attribute, std::string value);
 };
 
 #endif

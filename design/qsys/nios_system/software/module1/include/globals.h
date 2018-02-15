@@ -19,5 +19,4 @@ extern Servo servo;
 extern Wifi wifi;
 extern GPS gps;
 extern std::vector<std::string> weather_data;
-//extern char * temperature;
 #endif /* GLOBALS_H_ */

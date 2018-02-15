@@ -42,17 +42,23 @@ void Wifi::send_message_nowait(std::string message)
 	//printf("Printing: %s", message.c_str());
 	for(i = 0; i <  message.length(); i++) {
 		putchar_wifi(message[i]);
-		usleep(200);
+		usleep(500);
 		//printf("%c\n", message[i]);
 	}
 }
 
-std::vector<std::string> Wifi::get_weather_data(){
-	send_message_nowait("get_weather(14, 15, 200)\r\n");
+std::vector<std::string> Wifi::get_weather_data(int longitude, int lat){
+
+	char msgString[100];
+	sprintf(msgString, "get_weather(%i, %i)\r\n", longitude, lat);
+	printf("%s\n", msgString);
+
+	send_message_nowait(msgString);
 	std::string weather_type;
 	std::string temperature;
 
 	char data = getchar_wifi();
+	printf("%c\n", data);
 	while (data != '$') {
 		data = getchar_wifi();
 	}
@@ -72,6 +78,10 @@ std::vector<std::string> Wifi::get_weather_data(){
 	v.push_back(temperature);
 	return v;
 }
+
+//void Wifi::set_light(std::string attribute, std::string value){
+//	send_message_nowait("set_light(" + attribute +"," +value +")\r\n");
+//}
 
 /*
 	check_wifi()

@@ -12,6 +12,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 #include <string>
 
 // #defined constants representing values we write to the graphics 'command' register to get
@@ -101,7 +102,7 @@ public:
 	void PressLockUnlockEffect(int lock);
 	void DoorPanel();
 	void isRainingBackgroundEffect (int isRaining);
-	void WeatherPanel();
+	void WeatherPanel(std::vector<std::string> weather_data);
 	void pressEffectLightPanel (int themeNum, int brightNum);
 	void LightPanel();
 	void SquareFill(unsigned int x, unsigned int y, unsigned int height, unsigned int width, unsigned int fillColor);

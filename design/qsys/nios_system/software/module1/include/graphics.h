@@ -12,6 +12,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <vector>
+#include <algorithm>
 #include <string>
 
 // #defined constants representing values we write to the graphics 'command' register to get

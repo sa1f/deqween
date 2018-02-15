@@ -8,6 +8,7 @@
 #ifndef GLOBALS_H_
 #define GLOBALS_H_
 
+#include <string>
 #include "graphics.h"
 #include "servo.h"
 #include "wifi.h"
@@ -17,5 +18,5 @@ extern Graphics graphics;
 extern Servo servo;
 extern Wifi wifi;
 extern GPS gps;
-
+extern std::vector<std::string> weather_data;
 #endif /* GLOBALS_H_ */
