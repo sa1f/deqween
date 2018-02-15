@@ -39,6 +39,7 @@ void isr_check_weather(void *context, alt_u32 id){
 
 int main(void)
 {
+
     TouchScreen touchScreen(0x84000230);
 
     // home page
@@ -59,10 +60,12 @@ int main(void)
 
     //wifi.test_wifi();
     //while(true)
-    //{
-    //	if(gps.scanGPSData())
-    //	{
-    //		gps.getLat();
-    //		gps.getLong();
-    //	}
-    //}
+    // {
+    // 	if(gps.scanGPSData())
+    // 	{
+    // 		gps.getLat();
+    // 		gps.getLong();
+    //         printf("Time: %d:%d\n", (gps.getHours() - 8) % 24, gps.getMinutes());
+    // 	}
+    // }
+}

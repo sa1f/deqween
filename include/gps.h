@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include "memory_map.h"
 
@@ -24,6 +25,8 @@ public:
     bool scanGPSData();
     int getLat();
     int getLong();
+    uint32_t getMinutes();
+    uint32_t getHours();
 
 private:    
 
@@ -32,6 +35,8 @@ private:
     char latitudeDir[2];
     char longitude[10];
     char longitudeDir[2];
+    uint32_t hours;
+    uint32_t minutes;
     
     // log Data
     // Probably wont use this in project

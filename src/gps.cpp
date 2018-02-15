@@ -128,6 +128,7 @@ void GPS::dumpGPSData()
 
 size_t GPS::copyCoords(uint32_t elementCounter, size_t position)
 {
+	const uint32_t timeStart = 0;
 	const uint32_t latStart = 1;
 	const uint32_t latDirStart = 2;
 	const uint32_t longStart = 3;
@@ -136,6 +137,24 @@ size_t GPS::copyCoords(uint32_t elementCounter, size_t position)
 
 	switch (elementCounter)
 	{
+		case timeStart: {
+			char hrs[3] = {0};
+			char mins[3] = {0};
+
+			for(i = 0; GPSData[position + i] != ','; i++)
+			{
+				if (i < 2)
+				{
+					hrs[i] = GPSData[position + i];
+				}
+				else if (i >= 2 && i < 4)
+				{
+					mins[i] = GPSData[position + i];
+				}
+			}
+			hours = atoi(hrs);
+			minutes = atoi(mins);
+		}
 		case latStart: {
 			for(i = 0; GPSData[position + i] != ','; i++)
 			{
@@ -204,6 +223,16 @@ bool GPS::scanGPSData()
 	}
     return false;
 
+}
+
+uint32_t GPS::getHours()
+{
+	return hours;
+}
+
+uint32_t GPS::getMinutes()
+{
+	return minutes;
 }
 
 int GPS::getLat()
@@ -329,31 +358,4 @@ void GPS::getLogData()
          printf("Log Latitude: %s\n", latfloat);
          printf("Log Longitude: %s\n", longfloat);
     }
-
-
 }
-
-//int main(void){
-//	printf("Initializing GPS...\n");
-//	Init_GPS();
-//	
-//	//stopGPSLogging();
-//	//eraseGPSFlash();
-//	setGPSConfig();
-//	startGPSLogging();
-//    dumpGPSData();
-//
-//    getLogData();
-//
-//    //while (1)
-//    //{
-//    //	if(scanGPSData())
-//    //	{
-//    //		//printf("%s\n", GPSData);
-//    //		getLat();
-//    //		getLong();
-//    //	}
-//    //}
-//
-//    return 0;
-//}
