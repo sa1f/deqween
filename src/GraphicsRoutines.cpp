@@ -27,7 +27,7 @@ void doCloseDoor(int x, int y, int width, int height) {
 	char unlock[] = {'u', 'n', 'l', 'o', 'c', 'k', '\0'};
 	graphics.WriteAString(x + width / 2 - 6 * 11 / 2, y + height / 2, unlock, BLACK, 1);
 
-	servo.setServo(8);
+	servo.setServo(6);
 }
 
 void doLight(int x, int y, int width, int height) {

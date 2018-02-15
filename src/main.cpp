@@ -39,6 +39,7 @@ void isr_check_weather(void *context, alt_u32 id){
 		gps.scanGPSData();
 		longitude = gps.getLong();
 		latitude = gps.getLat();
+		//usleep(5000000);
 		weather_data = wifi.get_weather_data(longitude, latitude);
 		x = 0;
 	}
